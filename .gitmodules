@@ -1,0 +1,9 @@
+[submodule "pigment-mixing"]
+	path = pigment-mixing
+	url = https://github.com/scrtwpns/pigment-mixing.git
+[submodule "pigment-mixing-sys/pigment-mixing"]
+	path = pigment-mixing-sys/pigment-mixing
+	url = https://github.com/scrtwpns/pigment-mixing.git
+[submodule "mixbox-sys/mixbox"]
+	path = mixbox-sys/mixbox
+	url = https://github.com/scrtwpns/pigment-mixing.git

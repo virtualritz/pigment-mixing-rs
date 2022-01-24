@@ -1,0 +1,10 @@
+The underlying implementation is:
+
+Copyright (c) 2021, Secret Weapons. All rights reserved.
+This code is for non-commercial use only. It is provided for research
+and evaluation purposes.
+If you wish to obtain commercial license, please contact:
+mixbox@scrtwpns.com
+
+The Rust wrapper is under a Apache-2.0 or BSD-3-Clause or MIT or Zlib
+license – at your option.

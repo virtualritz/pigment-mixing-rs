@@ -1,0 +1,26 @@
+[package]
+name = "pigment-mixing"
+version = "0.1.0"
+edition = "2021"
+authors = ["Moritz Moeller <virtualritz@gmail.com>"]
+keywords = ["color", "graphics", "pigment", "mixing", "blending"]
+categories = ["graphics", "multimedia::images", "no-std"]
+license = "Apache-2.0 OR BSD-3-Clause OR MIT OR Zlib"
+description = "Mixing of colors as pigments"
+exclude = [".github/**/*"]
+readme = "README.md"
+homepage = "https://scrtwpns.com/mixbox/"
+documentation = "https://docs.rs/pigment-mixing/"
+repository = "https://github.com/virtualritz/pigment-mixing/"
+
+[features]
+pigment = []
+default = [ "pigment" ]
+
+[dependencies]
+arrayvec = "0.7.2"
+colstodian = "0.1.0-rc.3"
+lazy_static = "1.4.0"
+mixbox-sys = { path = "mixbox-sys" }
+nanorand = "0.6.1"
+num-traits = "0.2.14"
