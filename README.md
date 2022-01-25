@@ -6,11 +6,11 @@
 
 This crate uses the `mixbox-sys` wrapper around the `Mixbox` C++ reference
 implementation.
-Mixbox treat colors as if they were made of actual real-world pigments.
+`Mixbox` treats colors as if they were made of actual real-world pigments.
 It uses the Kubelka & Munk theory to predict the color of the resulting mixture.
 
 See [the website from SeCReT WeaPoNS](https://scrtwpns.com/mixbox) for more
-information on the idead behind this.
+information on the ideas behind this.
 ## Usage
 
 The simplest way to use Mixbox is with one of the `mix*` functions:
@@ -38,7 +38,7 @@ let pale_green =
 
 Alternatively, you can use the `Pigment` type. This allows mixing multiple colors at once using arbitrary weights:
 
-```rust
+```rs
 use colstodian::{Color, Scene, LinearSrgb};
 use pigment_mixing::Pigment;
 
@@ -60,7 +60,7 @@ let linear_srgb_result: Color<LinearSrgb, Scene> = result.into();
 ## Notes on Color
 
 The original paper mentions only `sRGB` as the working space. This makes sense
-if we assume a *linear* sRGB working space.
+if we assume a *linear* `sRGB` working space.
 
 The reference implementation in C++ does not seem to treat `f32` component
 RGB tuples any different from `u8` component RGB tuples though.
@@ -71,7 +71,7 @@ encoded *gamma of 2.2*.
 
 Using such values in any color math without linearizing them first (removing
 the gamma) leads to wrong results. Which is very obvious when doing e.g. mixing
-in RGB. I.e. fringes when mixing semiopaque pixels – more visble when their
+in RGB. I.e. fringes when mixing semi-opaque pixels – more visible when their
 color is close to primaries like red and green).
 
 I have a

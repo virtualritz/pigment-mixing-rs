@@ -1,8 +1,10 @@
 use crate::clamp;
 use arrayvec::ArrayVec;
 use colstodian::{kolor::Vec3, Color, EncodedSrgb, LinearSrgb, Scene};
-use core::ops::{Add, Mul};
-use mixbox_sys::{mixbox_latent_to_srgb32f, mixbox_srgb32f_to_latent, MIXBOX_NUMLATENTS};
+use core::{ops::{Add, Mul}, mem::MaybeUninit};
+use mixbox_sys::{
+    mixbox_latent_to_srgb32f, mixbox_srgb32f_to_latent, MIXBOX_NUMLATENTS,
+};
 use num_traits::{
     cast::AsPrimitive,
     float::Float,
@@ -32,7 +34,7 @@ impl Pigment {
         )
         .linearize();
 
-        let mut pigment = std::mem::MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
+        let mut pigment = MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
 
         unsafe {
             mixbox_srgb32f_to_latent(
@@ -49,7 +51,7 @@ impl Pigment {
     /// Constructs a `Pigment` from a [`u16`] component linear sRGB color.
     #[inline]
     pub fn from_linear_srgb_u16(r: u16, g: u16, b: u16) -> Self {
-        let mut pigment = std::mem::MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
+        let mut pigment = MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
 
         unsafe {
             mixbox_srgb32f_to_latent(
@@ -74,7 +76,7 @@ impl Pigment {
         )
         .linearize();
 
-        let mut pigment = std::mem::MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
+        let mut pigment = MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
 
         unsafe {
             mixbox_srgb32f_to_latent(
@@ -124,7 +126,8 @@ impl Mul<f32> for Pigment {
     type Output = Pigment;
 
     fn mul(self, rhs: f32) -> Self {
-        let result: ArrayVec<_, PIGMENT_LEN> = self.0.iter().map(|a| a * rhs).collect();
+        let result: ArrayVec<_, PIGMENT_LEN> =
+            self.0.iter().map(|a| a * rhs).collect();
         unsafe { Self(result.into_inner_unchecked()) }
     }
 }
@@ -203,10 +206,15 @@ impl From<[f32; 3]> for Pigment {
 impl From<(f32, f32, f32)> for Pigment {
     #[inline]
     fn from(srgb: (f32, f32, f32)) -> Self {
-        let mut pigment = std::mem::MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
+        let mut pigment = MaybeUninit::<[f32; PIGMENT_LEN]>::uninit();
 
         unsafe {
-            mixbox_srgb32f_to_latent(srgb.0, srgb.1, srgb.2, pigment.as_mut_ptr() as _);
+            mixbox_srgb32f_to_latent(
+                srgb.0,
+                srgb.1,
+                srgb.2,
+                pigment.as_mut_ptr() as _,
+            );
 
             Self(pigment.assume_init())
         }
@@ -217,7 +225,7 @@ impl From<(f32, f32, f32)> for Pigment {
 impl From<Pigment> for Color<LinearSrgb, Scene> {
     #[inline]
     fn from(pigment: Pigment) -> Self {
-        let mut color = std::mem::MaybeUninit::<Vec3>::uninit();
+        let mut color = MaybeUninit::<Vec3>::uninit();
         let color_ptr = color.as_mut_ptr().cast::<f32>();
 
         Color::from_raw(unsafe {
@@ -236,7 +244,7 @@ impl From<Pigment> for Color<LinearSrgb, Scene> {
 impl From<Pigment> for [f32; 3] {
     #[inline]
     fn from(pigment: Pigment) -> Self {
-        let mut srgb = std::mem::MaybeUninit::<[f32; 3]>::uninit();
+        let mut srgb = MaybeUninit::<[f32; 3]>::uninit();
 
         unsafe {
             mixbox_latent_to_srgb32f(
@@ -255,7 +263,7 @@ impl From<Pigment> for [f32; 3] {
 impl From<Pigment> for (f32, f32, f32) {
     #[inline]
     fn from(pigment: Pigment) -> Self {
-        let srgb = std::mem::MaybeUninit::<(f32, f32, f32)>::uninit();
+        let srgb = MaybeUninit::<(f32, f32, f32)>::uninit();
 
         unsafe {
             let mut srgb = srgb.assume_init();

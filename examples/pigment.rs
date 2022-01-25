@@ -1,4 +1,4 @@
-use colstodian::{Color, Scene, LinearSrgb};
+use colstodian::{Color, LinearSrgb, Scene};
 use pigment_mixing::Pigment;
 
 fn main() {
@@ -11,7 +11,9 @@ fn main() {
     let weight: f32 = 1.0 / 3.0;
 
     // Calculate the result.
-    let result = bright_yellow_pigment * weight + weight * deep_blue_pigment + weight * medium_red;
+    let result = bright_yellow_pigment * weight
+        + weight * deep_blue_pigment
+        + weight * medium_red;
 
     // Conbert the pigment back to an sRGB color.
     let linear_srgb_result: Color<LinearSrgb, Scene> = result.into();
