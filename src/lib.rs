@@ -1,21 +1,23 @@
 #![no_std]
-//! High level Rust wrapper around [`mixbox`](https://github.com/scrtwpns/pigment-mixing).
+//! High level Rust wrapper around [Mixbox](https://scrtwpns.com/mixbox).
 //!
 //! <p align="center">
 //!   <img src="https://scrtwpns.com/mixbox/teaser.jpg"/>
 //! </p>
 //!
-//! This crate uses the `mixbox-sys` wrapper around the `Mixbox` C++ reference
-//! implementation.
+//! This crate uses the `mixbox-sys` wrapper around the [Mixbox C++ reference
+//! implementation](https://github.com/scrtwpns/pigment-mixing).
+//!
 //! Mixbox treats colors as if they were made of actual real-world pigments.
 //! It uses the Kubelka & Munk theory to predict the color of the resulting
 //! mixture.
 //!
-//! See [the website from SeCReT WeaPoNS](https://scrtwpns.com/mixbox) for more
+//! See [the website of SeCReT WeaPoNS](https://scrtwpns.com/mixbox) for more
 //! information on the idead behind this.
 //! ## Usage
 //!
-//! The simplest way to use Mixbox is with one of the `mix*` functions:
+//! The simplest way to use this crate is through one of the `mix_` prefix
+//! functions:
 //!
 //! ```
 //! # use pigment_mixing::mix_srgb_u8;
@@ -26,18 +28,12 @@
 //! // 50/50 mix.
 //! let mixing_ratio = 0.5;
 //!
-//! // The colors are linearized internally but the
-//! // returned result is converted back to encoded
-//! // sRGB.
-//! let pale_green =
-//!     mix_srgb_u8(
-//!         &bright_yellow,
-//!         &deep_blue,
-//!         mixing_ratio
-//!     );
+//! // The colors are linearized internally but the returned result is
+//! // converted back to encoded sRGB.
+//! let pale_green = mix_srgb_u8(&bright_yellow, &deep_blue, mixing_ratio);
 //! ```
 //!
-//! Alternatively, you can use the `Pigment` type. This allows mixing multiple
+//! Alternatively, you can use the [`Pigment`] type. This allows mixing multiple
 //! colors at once using arbitrary weights:
 //!
 //! ```
@@ -57,7 +53,7 @@
 //!     + weight * deep_blue_pigment
 //!     + weight * medium_red;
 //!
-//! // Conbert the pigment back to an sRGB color.
+//! // Convert the pigment back to an sRGB color.
 //! let linear_srgb_result: Color<LinearSrgb, Scene> = result.into();
 //! ```
 //!
@@ -70,13 +66,13 @@
 //! RGB tuples any different from `u8` component RGB tuples though.
 //!
 //! From looking at the C++ code my current conclusion is that this is an error
-//! and as `u8` component `sRGB` will in almost all cases be *display-referred*
-//! with an encoded *gamma of 2.2*.
+//! as `u8` component `sRGB` will in almost all cases be *display-referred* with
+//! an encoded *gamma of 2.2*.
 //!
 //! Using such values in any color math without linearizing them first (removing
 //! the gamma) leads to wrong results. Which is very obvious when doing e.g.
-//! mixing in RGB. I.e. fringes when mixing semi-opaque pixels – more visible when
-//! their color is close to primaries like red and green).
+//! mixing in RGB. I.e. fringes when mixing semi-opaque pixels – more visible
+//! when their color is close to primaries like red and green).
 //!
 //! I have a
 //! [ticket open with the authors](https://github.com/scrtwpns/pigment-mixing/issues/1)
@@ -84,9 +80,12 @@
 //!
 //! The code in this crate only uses the `f32` component functions from the C++
 //! code internally.
-//! The `u8` component convenience functions assume encoded sRGB and do decoding
-//! (linearization) befor mixing and encoding before returning through the
-//! excellent [`colstodian`](https://github.com/termhn/colstodian) crate.
+//!
+//! The `u8` component convenience functions assume *encoded* `sRGB` and do
+//! decoding (linearization) befor mixing and encoding before returning.
+//!
+//! All color conversion is done via the excellent
+//! [`colstodian`](https://github.com/termhn/colstodian) crate.
 //!
 //! ## License
 //!

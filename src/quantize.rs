@@ -8,8 +8,8 @@ pub type Rng = WyRand;
 /// Generates a random number in the range -0.5 .. 0.5.
 #[inline]
 fn generate_random_number(rng: &mut Rng) -> f32 {
-    (rng.generate_range(u32::MIN / 2..=u32::MAX / 2) as f64
-        / u32::MAX as f64) as _
+    (rng.generate_range(u32::MIN / 2..=u32::MAX / 2) as f64 / u32::MAX as f64)
+        as _
 }
 
 #[inline]

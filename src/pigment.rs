@@ -1,7 +1,10 @@
 use crate::clamp;
 use arrayvec::ArrayVec;
 use colstodian::{kolor::Vec3, Color, EncodedSrgb, LinearSrgb, Scene};
-use core::{ops::{Add, Mul}, mem::MaybeUninit};
+use core::{
+    mem::MaybeUninit,
+    ops::{Add, Mul},
+};
 use mixbox_sys::{
     mixbox_latent_to_srgb32f, mixbox_srgb32f_to_latent, MIXBOX_NUMLATENTS,
 };

@@ -1,19 +1,20 @@
-# `pigment-mixing` – High level Rust wrapper around [`mixbox`](https://github.com/scrtwpns/pigment-mixing)
+# `pigment-mixing` – High level Rust wrapper around [Mixbox](https://scrtwpns.com/mixbox)
 
 <p align="center">
   <img src="https://scrtwpns.com/mixbox/teaser.jpg"/>
 </p>
 
-This crate uses the `mixbox-sys` wrapper around the `Mixbox` C++ reference
-implementation.
+This crate uses the `mixbox-sys` wrapper around the [Mixbox C++ reference
+implementation](https://github.com/scrtwpns/pigment-mixing).
 `Mixbox` treats colors as if they were made of actual real-world pigments.
 It uses the Kubelka & Munk theory to predict the color of the resulting mixture.
 
-See [the website from SeCReT WeaPoNS](https://scrtwpns.com/mixbox) for more
+See [the website of SeCReT WeaPoNS](https://scrtwpns.com/mixbox) for more
 information on the ideas behind this.
 ## Usage
 
-The simplest way to use Mixbox is with one of the `mix*` functions:
+The simplest way to use this crate is through one of the `mix_` prefix
+functions:
 
 ```rs
 use pigment_mixing::mix_srgb_u8;
@@ -53,7 +54,7 @@ let weight: f32 = 1.0 / 3.0;
 // Calculate the result.
 let result = bright_yellow_pigment * weight + weight * deep_blue_pigment + weight * medium_red;
 
-// Conbert the pigment back to an sRGB color.
+// Convert the pigment back to an sRGB color.
 let linear_srgb_result: Color<LinearSrgb, Scene> = result.into();
 ```
 
@@ -65,8 +66,8 @@ if we assume a *linear* `sRGB` working space.
 The reference implementation in C++ does not seem to treat `f32` component
 RGB tuples any different from `u8` component RGB tuples though.
 
-From looking at the C++ code my current conclusion is that this is an error and
-as `u8` component `sRGB` will in almost all cases be *display-referred* with an
+From looking at the C++ code my current conclusion is that this is an error as
+`u8` component `sRGB` will in almost all cases be *display-referred* with an
 encoded *gamma of 2.2*.
 
 Using such values in any color math without linearizing them first (removing
@@ -82,6 +83,15 @@ The code in this crate only uses the `f32` component functions from the C++ code
 internally.
 The `u8` component convenience functions assume encoded sRGB and do decoding
 (linearization) befor mixing and encoding before returning through the excellent
+[`colstodian`](https://github.com/termhn/colstodian) crate.
+
+The code in this crate only uses the `f32` component functions from the C++ code
+internally.
+
+The `u8` component convenience functions assume *encoded* `sRGB` and do decoding
+(linearization) befor mixing and encoding before returning.
+
+All color conversion is done via the excellent
 [`colstodian`](https://github.com/termhn/colstodian) crate.
 
 ## License

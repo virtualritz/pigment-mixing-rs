@@ -15,7 +15,7 @@ fn main() {
         + weight * deep_blue_pigment
         + weight * medium_red;
 
-    // Conbert the pigment back to an sRGB color.
+    // Convert the pigment back to an sRGB color.
     let linear_srgb_result: Color<LinearSrgb, Scene> = result.into();
 
     println!("{:?}", linear_srgb_result);
