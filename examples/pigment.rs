@@ -7,7 +7,6 @@ fn main() {
     let medium_red_pigment = Pigment::from_srgb_u8(201, 37, 44);
     let deep_blue_pigment = Pigment::from_srgb_u8(0, 0, 96);
 
-
     // Weight each one ⅓rd.
     let weight: f32 = 1.0 / 3.0;
 

@@ -7,7 +7,8 @@
 This crate uses the `mixbox-sys` wrapper around the [Mixbox C++ reference
 implementation](https://github.com/scrtwpns/pigment-mixing).
 `Mixbox` treats colors as if they were made of actual real-world pigments.
-It uses the Kubelka & Munk theory to predict the color of the resulting mixture.
+It uses the [Kubelka-Munk theory](https://en.wikipedia.org/wiki/Kubelka-Munk_theory)
+to predict the color of the resulting mixture.
 
 See [the website of SeCReT WeaPoNS](https://scrtwpns.com/mixbox) for more
 information on the ideas behind this.
@@ -37,7 +38,8 @@ let pale_green =
     );
 ```
 
-Alternatively, you can use the `Pigment` type. This allows mixing multiple colors at once using arbitrary weights:
+Alternatively, you can use the `Pigment` type. This allows mixing multiple
+colors at once using arbitrary weights:
 
 ```rs
 use colstodian::{Color, Scene, LinearSrgb};
