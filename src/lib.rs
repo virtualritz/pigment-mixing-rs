@@ -197,8 +197,9 @@ where
 ///
 /// Colors will be linearized internally before mixing.
 ///
-/// The output is quantizes the with an error diffusion dither with an amplitude
-/// of 0.5 is in sRGB with an encoded gamma of 2.2.
+/// The output is in sRGB with an encoded gamma of 2.2.
+/// It is quantized from [`f32`] to [`u8`] using  an error diffusion dither with
+/// an amplitude of 0.5.
 #[inline]
 pub fn mix_srgb_u8_dither<T>(
     srgb_a: &[u8; 3],

@@ -1,6 +1,7 @@
 use crate::clamp;
 use core::ops::Add;
-use nanorand::{Rng as WyRandRng, WyRand};
+use nanorand::Rng as WyRandRng;
+pub use nanorand::WyRand;
 use num_traits::Float;
 
 pub type Rng = WyRand;
