@@ -43,5 +43,5 @@ pub fn main() {
         .write_to_file(&bindings_path)
         .expect("Couldn't write bindings");
 
-    //println!("cargo:rerun-if-changed=build.rs");
+    println!("cargo:rerun-if-changed=build.rs");
 }

@@ -2,6 +2,7 @@
 name = "mixbox-sys"
 version = "0.1.0"
 edition = "2021"
+license-file = "LICENSE.txt"
 
 [build-dependencies]
 bindgen = "0.59.2"

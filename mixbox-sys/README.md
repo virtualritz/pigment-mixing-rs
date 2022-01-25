@@ -1,4 +1,4 @@
-# `mixbox-sys` – Rust wrapper around [`mixbox`](https://github.com/scrtwpns/pigment-mixing)
+# `mixbox-sys` – Rust wrapper around [Mixbox](https://github.com/scrtwpns/pigment-mixing)
 
 ## License
 
