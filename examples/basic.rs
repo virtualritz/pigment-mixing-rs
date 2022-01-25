@@ -7,7 +7,10 @@ fn main() {
 
     let mixing_ratio = 0.5;
 
-    let result = mix_srgb_u8(&bright_yellow, &deep_blue, mixing_ratio);
+    let pale_green = mix_srgb_u8(&bright_yellow, &deep_blue, mixing_ratio);
 
-    println!("Green: {:?}", result);
+    println!(
+        "Mixing {:?} with {:?} gives {:?}",
+        bright_yellow, deep_blue, pale_green
+    );
 }

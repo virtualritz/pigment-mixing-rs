@@ -38,7 +38,9 @@ pub fn mix_linear_srgb<T, St>(
 where
     T: AsPrimitive<f32>,
 {
-    let mut out = std::mem::MaybeUninit::<Vec3>::uninit();
+    let mut color = std::mem::MaybeUninit::<Vec3>::uninit();
+    let color_ptr = color.as_mut_ptr().cast::<f32>();
+
     Color::from_raw(unsafe {
         mixbox_lerp_srgb32f(
             srgb_a.raw[0],
@@ -48,12 +50,11 @@ where
             srgb_b.raw[1],
             srgb_b.raw[2],
             ratio.as_(),
-            out.as_mut_ptr() as _,
-            out.as_mut_ptr().cast::<f32>().offset(1) as _,
-            out.as_mut_ptr().cast::<f32>().offset(2) as _,
+            color_ptr as _,
+            color_ptr.offset(1) as _,
+            color_ptr.offset(2) as _,
         );
-        let out = out.assume_init();
-        out
+        color.assume_init()
     })
 }
 
