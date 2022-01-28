@@ -5,7 +5,6 @@ use std::{env, path::PathBuf};
 //static MAC_OS_BREW_CLANG_PATH: &str = "/usr/local/opt/llvm";
 
 pub fn main() {
-
     cc::Build::new()
         //.include(&osd_inlude_path)
         .cpp(true)
@@ -15,7 +14,6 @@ pub fn main() {
         .flag("-Wno-unused-function")
         .flag("-Wno-unused-parameter")
         .file("mixbox/mixbox.cpp")
-
         .compile("mixbox");
 
     println!("cargo:rustc-link-lib=static=mixbox");

@@ -85,15 +85,10 @@ to clarify this.
 
 The code in this crate only uses the `f32` component functions from the C++ code
 internally.
-The `u8` component convenience functions assume encoded sRGB and do decoding
-(linearization) befor mixing and encoding before returning through the excellent
-[`colstodian`](https://github.com/termhn/colstodian) crate.
 
-The code in this crate only uses the `f32` component functions from the C++ code
-internally.
-
-The `u8` component convenience functions assume *encoded* `sRGB` and do decoding
-(linearization) befor mixing and encoding before returning.
+The `u8` component convenience functions on the Rust side assume *encoded*
+`sRGB` and do decoding (linearization) befor mixing and encoding before
+returning.
 
 All color conversion is done via the excellent
 [`colstodian`](https://github.com/termhn/colstodian) crate.
