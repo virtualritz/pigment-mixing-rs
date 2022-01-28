@@ -229,7 +229,7 @@ where
     let result = mix_linear_srgb(&a_linear, &b_linear, ratio)
         .convert_to::<EncodedSrgb>();
 
-    // QUantize the result to u8 using an error diffusion dither
+    // Quantize the result to u8 using an error diffusion dither
     // with an amplitude of 0.5 to avoid artifacts.
     let (r, g, b) = quantize_triplet(
         (result.raw[0], result.raw[1], result.raw[2]),
@@ -281,12 +281,10 @@ where
 ///
 /// The colors are assumed to be in linear sRGB (gamma 1.0).
 ///
-/// Colors will be linearized internally before mixing.
-///
 /// The output is quantizes the with an error diffusion dither with an amplitude
 /// of 0.5 is in sRGB with an encoded gamma of 2.2.
 #[inline]
-pub fn mix_srgb_u16_dither<T>(
+pub fn mix_linear_srgb_u16_dither<T>(
     srgb_a: &[u8; 3],
     srgb_b: &[u8; 3],
     ratio: T,
