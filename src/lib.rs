@@ -115,7 +115,7 @@
 //! submitted for inclusion in the work by you, as defined in the `Apache-2.0`
 //! license, shall be licensed as above, without any additional terms or
 //! conditions.
-use colstodian::{kolor::Vec3, Color, Display, EncodedSrgb, LinearSrgb, Scene};
+use colstodian::{kolor::Vec3, Color, EncodedSrgb, LinearSrgb, Scene};
 use core::mem::MaybeUninit;
 use mixbox_sys::mixbox_lerp_srgb32f;
 use num_traits::cast::AsPrimitive;
@@ -129,11 +129,11 @@ mod quantize;
 pub use quantize::*;
 
 /// Mixes two sRGB colors.
-pub fn mix_linear_srgb<T, St>(
-    srgb_a: &Color<LinearSrgb, St>,
-    srgb_b: &Color<LinearSrgb, St>,
+pub fn mix_linear_srgb<T, Scene>(
+    srgb_a: &Color<LinearSrgb, Scene>,
+    srgb_b: &Color<LinearSrgb, Scene>,
     ratio: T,
-) -> Color<LinearSrgb, Display>
+) -> Color<LinearSrgb, Scene>
 where
     T: AsPrimitive<f32>,
 {
