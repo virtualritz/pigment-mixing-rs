@@ -1,10 +1,11 @@
 use crate::clamp;
 use core::ops::Add;
 use nanorand::Rng as WyRandRng;
-pub use nanorand::WyRand;
+pub use nanorand::WyRand as Rng;
 use num_traits::Float;
 
-pub type Rng = WyRand;
+/// Random number generator needed for the `mix_*_dither` variants.
+//pub type Rng = WyRand;
 
 /// Generates a random number in the range -0.5 .. 0.5.
 #[inline]
@@ -13,7 +14,7 @@ fn generate_random_number(rng: &mut Rng) -> f32 {
 }
 
 #[inline]
-pub fn quantize_triplet<T>(
+pub(crate) fn quantize_triplet<T>(
     value: (T, T, T),
     one: T,
     min: T,

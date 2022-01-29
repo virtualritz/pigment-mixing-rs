@@ -71,8 +71,7 @@ The reference implementation in C++ does not seem to treat `f32` component
 RGB tuples any different from `u8` component RGB tuples though.
 
 From looking at the C++ code my current conclusion is that this is an error as
-`u8` component `sRGB` will in almost all cases be *display-referred* with an
-encoded *gamma of 2.2*.
+`u8` component `sRGB` will in almost all have an encoded *gamma of 2.2*.
 
 Using such values in any color math without linearizing them first (removing
 the gamma) leads to wrong results. Which is very obvious when doing e.g. mixing

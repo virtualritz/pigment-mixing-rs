@@ -16,6 +16,7 @@ use num_traits::{
 
 const PIGMENT_LEN: usize = MIXBOX_NUMLATENTS as _;
 
+/// A color represented as pigment mixture.
 pub struct Pigment([f32; PIGMENT_LEN]);
 
 impl Pigment {

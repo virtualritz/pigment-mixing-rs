@@ -67,8 +67,8 @@
 //! RGB tuples any different from `u8` component RGB tuples though.
 //!
 //! From looking at the C++ code my current conclusion is that this is an error
-//! as `u8` component `sRGB` will in almost all cases be *display-referred* with
-//! an encoded *gamma of 2.2*.
+//! as `u8` component `sRGB` will in almost all cases have an encoded *gamma of
+//! 2.2*.
 //!
 //! Using such values in any color math without linearizing them first (removing
 //! the gamma) leads to wrong results. Which is very obvious when doing e.g.
@@ -115,7 +115,7 @@
 //! submitted for inclusion in the work by you, as defined in the `Apache-2.0`
 //! license, shall be licensed as above, without any additional terms or
 //! conditions.
-use colstodian::{kolor::Vec3, Color, EncodedSrgb, LinearSrgb, Scene};
+use colstodian::{kolor::Vec3, Color, Display, EncodedSrgb, LinearSrgb};
 use core::mem::MaybeUninit;
 use mixbox_sys::mixbox_lerp_srgb32f;
 use num_traits::cast::AsPrimitive;
@@ -128,12 +128,12 @@ pub use pigment::*;
 mod quantize;
 pub use quantize::*;
 
-/// Mixes two sRGB colors.
-pub fn mix_linear_srgb<T, Scene>(
-    srgb_a: &Color<LinearSrgb, Scene>,
-    srgb_b: &Color<LinearSrgb, Scene>,
+/// Mixes two linear sRGB colors.
+pub fn mix_linear_srgb<T, St>(
+    srgb_a: &Color<LinearSrgb, St>,
+    srgb_b: &Color<LinearSrgb, St>,
     ratio: T,
-) -> Color<LinearSrgb, Scene>
+) -> Color<LinearSrgb, St>
 where
     T: AsPrimitive<f32>,
 {
@@ -159,7 +159,7 @@ where
 
 /// Mixes two `u8` component sRGB colors.
 ///
-/// The colors are assumed to be in sRGB with an encoded gamma of 2.2.
+/// The colors are assumed to be in encoded sRGB (gamma 2.2).
 ///
 /// Colors will be linearized internally before mixing.
 ///
@@ -170,18 +170,11 @@ where
     T: AsPrimitive<f32>,
     f32: From<T>,
 {
-    let a_linear = Color::<EncodedSrgb, Scene>::new(
-        srgb_a[0] as f32 / u8::MAX as f32,
-        srgb_a[1] as f32 / u8::MAX as f32,
-        srgb_a[2] as f32 / u8::MAX as f32,
-    )
-    .linearize();
-    let b_linear = Color::<EncodedSrgb, Scene>::new(
-        srgb_b[0] as f32 / u8::MAX as f32,
-        srgb_b[1] as f32 / u8::MAX as f32,
-        srgb_b[2] as f32 / u8::MAX as f32,
-    )
-    .linearize();
+    let a_linear: Color<LinearSrgb, _> =
+        Color::<EncodedSrgb, _>::from_u8(*srgb_a).linearize();
+
+    let b_linear: Color<LinearSrgb, _> =
+        Color::<EncodedSrgb, _>::from_u8(*srgb_b).linearize();
 
     let result = mix_linear_srgb(&a_linear, &b_linear, ratio)
         .convert_to::<EncodedSrgb>();
@@ -193,9 +186,9 @@ where
     ]
 }
 
-/// Mixes two `u8` component sRGB and dithers the result.
+/// Mixes two `u8` component sRGB colors and dithers the result.
 ///
-/// The colors are assumed to be in sRGB with an encoded gamma of 2.2.
+/// The colors are assumed to be in encoded sRGB (gamma 2.2).
 ///
 /// Colors will be linearized internally before mixing.
 ///
@@ -213,18 +206,11 @@ where
     T: AsPrimitive<f32>,
     f32: From<T>,
 {
-    let a_linear = Color::<EncodedSrgb, Scene>::new(
-        srgb_a[0] as f32 / u8::MAX as f32,
-        srgb_a[1] as f32 / u8::MAX as f32,
-        srgb_a[2] as f32 / u8::MAX as f32,
-    )
-    .linearize();
-    let b_linear = Color::<EncodedSrgb, Scene>::new(
-        srgb_b[0] as f32 / u8::MAX as f32,
-        srgb_b[1] as f32 / u8::MAX as f32,
-        srgb_b[2] as f32 / u8::MAX as f32,
-    )
-    .linearize();
+    let a_linear: Color<LinearSrgb, _> =
+        Color::<EncodedSrgb, _>::from_u8(*srgb_a).linearize();
+
+    let b_linear: Color<LinearSrgb, _> =
+        Color::<EncodedSrgb, _>::from_u8(*srgb_b).linearize();
 
     let result = mix_linear_srgb(&a_linear, &b_linear, ratio)
         .convert_to::<EncodedSrgb>();
@@ -244,6 +230,90 @@ where
 
 /// Mixes two `u16` component sRGB colors.
 ///
+/// The colors are assumed to be in encoded sRGB (gamma 2.2).
+///
+/// The output is in sRGB with an encoded gamma of 2.2.
+#[inline]
+pub fn mix_srgb_u16<T>(
+    srgb_a: &[u16; 3],
+    srgb_b: &[u16; 3],
+    ratio: T,
+) -> [u16; 3]
+where
+    T: AsPrimitive<f32>,
+    f32: From<T>,
+{
+    let a_linear: Color<LinearSrgb, _> = Color::<EncodedSrgb, Display>::new(
+        srgb_a[0] as f32 / u16::MAX as f32,
+        srgb_a[1] as f32 / u16::MAX as f32,
+        srgb_a[2] as f32 / u16::MAX as f32,
+    )
+    .linearize();
+    let b_linear: Color<LinearSrgb, _> = Color::<EncodedSrgb, Display>::new(
+        srgb_b[0] as f32 / u16::MAX as f32,
+        srgb_b[1] as f32 / u16::MAX as f32,
+        srgb_b[2] as f32 / u16::MAX as f32,
+    )
+    .linearize();
+
+    let result = mix_linear_srgb(&a_linear, &b_linear, ratio)
+        .convert_to::<EncodedSrgb>();
+
+    [
+        (result.raw[0] * u16::MAX as f32 + 0.5) as _,
+        (result.raw[1] * u16::MAX as f32 + 0.5) as _,
+        (result.raw[2] * u16::MAX as f32 + 0.5) as _,
+    ]
+}
+
+/// Mixes two `u8` component sRGB colors and dithers the result.
+///
+/// The colors are assumed to be in encoded sRGB (gamma 2.2).
+///
+/// The output is quantizes the with an error diffusion dither with an amplitude
+/// of 0.5 is in sRGB with an encoded gamma of 2.2.
+#[inline]
+pub fn mix_srgb_u16_dither<T>(
+    srgb_a: &[u8; 3],
+    srgb_b: &[u8; 3],
+    ratio: T,
+    rng: &mut Rng,
+) -> [u8; 3]
+where
+    T: AsPrimitive<f32>,
+    f32: From<T>,
+{
+    let a_linear: Color<LinearSrgb, _> = Color::<EncodedSrgb, Display>::new(
+        srgb_a[0] as f32 / u16::MAX as f32,
+        srgb_a[1] as f32 / u16::MAX as f32,
+        srgb_a[2] as f32 / u16::MAX as f32,
+    )
+    .linearize();
+    let b_linear: Color<LinearSrgb, _> = Color::<EncodedSrgb, Display>::new(
+        srgb_b[0] as f32 / u16::MAX as f32,
+        srgb_b[1] as f32 / u16::MAX as f32,
+        srgb_b[2] as f32 / u16::MAX as f32,
+    )
+    .linearize();
+
+    let result = mix_linear_srgb(&a_linear, &b_linear, ratio)
+        .convert_to::<EncodedSrgb>();
+
+    // Quantize the result to u16 using an error diffusion dither
+    // with an amplitude of 0.5 to avoid artifacts.
+    let (r, g, b) = quantize_triplet(
+        (result.raw[0], result.raw[1], result.raw[2]),
+        u16::MAX as _, // one
+        0.0,           // min
+        u16::MAX as _, // max
+        rng,
+    );
+
+    [r as _, g as _, b as _]
+}
+
+/// Mixes two `u16` component linear sRGB colors.
+///
 /// The colors are assumed to be in linear sRGB (gamma 1.0).
 ///
 /// The output is in sRGB with an encoded gamma of 2.2.
@@ -257,12 +327,12 @@ where
     T: AsPrimitive<f32>,
     f32: From<T>,
 {
-    let a_linear = Color::<LinearSrgb, Scene>::new(
+    let a_linear = Color::<LinearSrgb, Display>::new(
         srgb_a[0] as f32 / u16::MAX as f32,
         srgb_a[1] as f32 / u16::MAX as f32,
         srgb_a[2] as f32 / u16::MAX as f32,
     );
-    let b_linear = Color::<LinearSrgb, Scene>::new(
+    let b_linear = Color::<LinearSrgb, Display>::new(
         srgb_b[0] as f32 / u16::MAX as f32,
         srgb_b[1] as f32 / u16::MAX as f32,
         srgb_b[2] as f32 / u16::MAX as f32,
@@ -277,7 +347,7 @@ where
     ]
 }
 
-/// Mixes two `u8` component sRGB and dithers the result.
+/// Mixes two `u8` component linear sRGB colors and dithers the result.
 ///
 /// The colors are assumed to be in linear sRGB (gamma 1.0).
 ///
@@ -294,12 +364,12 @@ where
     T: AsPrimitive<f32>,
     f32: From<T>,
 {
-    let a_linear = Color::<LinearSrgb, Scene>::new(
+    let a_linear = Color::<LinearSrgb, Display>::new(
         srgb_a[0] as f32 / u16::MAX as f32,
         srgb_a[1] as f32 / u16::MAX as f32,
         srgb_a[2] as f32 / u16::MAX as f32,
     );
-    let b_linear = Color::<LinearSrgb, Scene>::new(
+    let b_linear = Color::<LinearSrgb, Display>::new(
         srgb_b[0] as f32 / u16::MAX as f32,
         srgb_b[1] as f32 / u16::MAX as f32,
         srgb_b[2] as f32 / u16::MAX as f32,
